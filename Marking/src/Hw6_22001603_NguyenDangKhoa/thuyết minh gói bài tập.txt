@@ -1,0 +1,25 @@
+********************  COMBO-2  ********************
+Bài 2:
+-Sử dụng cấu trúc cây để xây dựng min heap lưu bằng mảng
+-Có hàm upHeap và downHeap để điều chỉnh sao cho luôn thỏa mãn tính đống sau khi thêm hoặc xóa phần tử
+Bài 3:
+-Sử dụng MinHeapPriorityQueue ở bài tập 2 để xây dựng thuật toán heap sort bằng cách :
+    + Từ mảng đầu vào chưa được sắp xếp ta sẽ lấy từng phần tử ra cho vào min heap
+    + Sau khi xong thì xóa phần tử của ra khỏi min heap và cho lại vào mảng. Phần tử lấy ra theo nguyên lý sẽ là bé nhất
+    trong min heap hiện tại
+    + Sau khi lấy hết phần tử ra khỏi min heap và lưu lại vào mảng theo vị trí từ đầu tới cuối mảng ta sẽ được 1 mảng sắp xếp tăng dần
+-So sánh thời gian chạy của các thuật toán đã học:
+    + Trình bày các thuật toán
+    + Viết 1 hàm random các phần tử với đầu vào là kích thước mảng
+    + Sử dụng 1 mảng lưu các giá trị độ lớn của mảng muốn có. Sử dụng vòng for để chạy từng giá trị kích thước 20 lần
+    rồi tính thời gian trung bình của các thuật toán khi chạy (với cùng kích thức cùng lần chạy các thuật toán sẽ được random
+    ra mảng các phần tử nhưng chúng sẽ đảm bảo thực hiện trên mảng với độ lớn, và cấu trúc các phần tử như nhau)
+    + Kết quả sau khi tính toán sẽ được ghi ra file runtime.csv
+    + Lấy số liệu rồi xây dựng biểu đồ so sánh trên excel.
+Bài 6:
+-Xây dựng chương trình mô phỏng giao dịch chứng khoán sử dụng bài 2:
+    + Lưu lệnh mua và bán vào 2 minheap với khóa là giá trị mỗi cổ phiếu
+    + Sử dụng giao diện người dùng để người dùng thực hiện yêu cầu như mua, bán, xem các lệnh đang có, thoát chương trình
+    + Khi sử dụng lệnh mua bán người dùng sẽ nhập vào số cổ phiếu muốn mua và giá mong muốn
+    + Lệnh khớp(theo yêu cầu cẩu đề bài) sẽ in ra giao dịch và xóa khỏi minheap
+    + Chức năng của các hàm đã được giải thích trước mỗi hàm.
