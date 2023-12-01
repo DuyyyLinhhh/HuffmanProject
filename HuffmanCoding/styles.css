@@ -15,7 +15,7 @@
     -fx-font-size: 40px; /* Kích thước chữ */
     -fx-font-weight: bold; /* Độ đậm chữ */
     -fx-alignment: CENTER; /* Canh giữa dòng chữ */
-    -fx-padding: 20px 0 10px 0; /* Độ dày đệm trên và dưới của nhãn */
+    -fx-padding: 10px 0 10px 0; /* Độ dày đệm trên và dưới của nhãn */
     -fx-text-fill: blue; /* Màu chữ xanh cho nút */
     -fx-font-family: "VNI-Wide Latin", sans-serif; /* Thay đổi kiểu chữ (font) */
 
@@ -33,7 +33,7 @@
     -fx-font-size: 15px; /* Kích thước chữ */
     -fx-font-weight: normal ; /* Độ đậm chữ */
     -fx-padding: 5px 0px 5px 0; /* Độ dày đệm trên và dưới của nhãn */
-    -fx-text-fill: black; /* Màu chữ trắng cho nút */
+    -fx-text-fill: black; /* Màu chữ đen cho nút */
 
 }
 .button-layout {

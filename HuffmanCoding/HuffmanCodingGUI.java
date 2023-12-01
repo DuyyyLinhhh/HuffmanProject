@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import java.io.*;
 
 public class HuffmanCodingGUI extends Application {
+    private Stage primaryStage;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -25,12 +27,14 @@ public class HuffmanCodingGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Khởi tạo giao diện chính
         primaryStage.setTitle("Chương trình nén dữ liệu");
         // Thêm nhãn tiêu đề
         Label titleLabel = new Label("\t\t\t\t\tHuffman Coding");
         titleLabel.getStyleClass().add("title-label"); // Thêm CSS class để tùy chỉnh kiểu dáng
+
         HBox inputBox = new HBox(10); // 10 là khoảng cách giữa các thành phần
-        Label labelInput = new Label("Input String:");
+        Label labelInput = new Label("Input Encode String:");
         labelInput.getStyleClass().add("codinh-label"); // Thêm CSS class để tùy chỉnh kiểu dáng
         TextField inputTextField = new TextField();
         inputTextField.getStyleClass().add("input-label");
@@ -50,41 +54,43 @@ public class HuffmanCodingGUI extends Application {
         Canvas canvas = new Canvas(1800, 800);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Button decodeButton = new Button("Decode");
+
         Label decodedLabel = new Label("Decoded Result:");
         decodedLabel.getStyleClass().add("codinh-label");// Thêm CSS class để tùy chỉnh kiểu dán
 
         HBox buttonLayout = new HBox(10);
-        buttonLayout.getChildren().addAll(encodeButton, decodeButton, readFromFileButton, showTreeButton);
+        buttonLayout.getChildren().addAll(encodeButton, showTreeButton);
+        TextField decodeTextField = new TextField();
+        decodeTextField.getStyleClass().add("input-label");
+        Button decodeInputButton = new Button("Decode");
 
-        VBox layout = new VBox(17);
-        layout.getChildren().addAll(titleLabel, inputBox, buttonLayout, resultLabel, decodedLabel, canvas);
+        HBox decodeBox = new HBox(10);
+        Label labelDecode = new Label("Input Decode String:");
+        labelDecode.getStyleClass().add("codinh-label");
+        decodeBox.getChildren().addAll(labelDecode, decodeTextField, decodeInputButton);
+
 
         // Đặt lề cho các phần tử chính
         Insets elementInsets = new Insets(0, 0, 0, 50);
         titleLabel.setPadding(elementInsets);
         labelInput.setPadding(elementInsets);
-//        inputTextField.setPadding(elementInsets);
         buttonLayout.setPadding(elementInsets);
         resultLabel.setPadding(elementInsets);
         decodedLabel.setPadding(elementInsets);
+
+
         // Thêm CSS cho các nút và layout
         encodeButton.getStyleClass().add("button-styling");
-        decodeButton.getStyleClass().add("button-styling");
         showTreeButton.getStyleClass().add("button-styling");
         readFromFileButton.getStyleClass().add("button-styling");
 
-        layout.setId("layout-container");
-        // Wrap the layout in a ScrollPane
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(layout);
-
         HuffmanCoding huffmanCoding = new HuffmanCoding();
-
+        // Biến để kiểm soát hiển thị cây và kết quả encode/decode
         final boolean[] treeVisible = {false};
         final boolean[] isEncodeResultVisible = {false};
         final boolean[] isDecodeResultVisible = {false};
 
+        // Xử lý sự kiện khi nhấn nút "Encode"
         encodeButton.setOnAction(event -> {
             String inputStr = inputTextField.getText();
             try {
@@ -96,7 +102,7 @@ public class HuffmanCodingGUI extends Application {
                     resultLabel.setText("Encoded Result:\n" + encodedResult);
                     isEncodeResultVisible[0] = true;
                     // Ghi kết quả encode vào file
-                    writeToFile(encodedResult, "C:\\Learning\\java1\\dsa\\src\\project\\original\\output_encode.txt");
+                    writeToFile(encodedResult, "output_encode.txt");
                 } else {
                     resultLabel.setText("Encoded Result: ");
                     isEncodeResultVisible[0] = false;
@@ -107,6 +113,7 @@ public class HuffmanCodingGUI extends Application {
             }
         });
 
+        // Xử lý sự kiện khi nhấn nút "Show Tree"
         showTreeButton.setOnAction(event -> {
             try {
 
@@ -115,7 +122,7 @@ public class HuffmanCodingGUI extends Application {
                     Node root = huffmanCoding.getRoot();
 
                     gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                    drawHuffmanTree(root, gc, canvas.getWidth() / 2, 50, 300, 70);
+                    drawHuffmanTree(root, gc, canvas.getWidth() / 3, 0, 300, 70);
 
                     treeVisible[0] = true;
                 } else {
@@ -126,46 +133,64 @@ public class HuffmanCodingGUI extends Application {
                 Platform.runLater(() -> resultLabel.setText("An error occurred: " + e.getMessage()));
             }
         });
+        // Thêm nút "Read from File" cho "input string"
+        Button readInputStringFromFileButton = new Button("Read from File");
+        inputBox.getChildren().add(readInputStringFromFileButton);
 
-        readFromFileButton.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Resource File");
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        readInputStringFromFileButton.getStyleClass().add("button-styling");
 
-            if (selectedFile != null) {
-                try {
-                    StringBuilder content = new StringBuilder();
-                    BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
+        readInputStringFromFileButton.setOnAction(event -> {
+            String content = readContentFromFile();
+            if (content != null) {
+                inputTextField.setText(content);
+            }
+        });
 
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        content.append(line).append("\n");
-                    }
+        // Thêm nút "Read from File" cho "input decode string"
+        Button readDecodeStringFromFileButton = new Button("Read from File");
+        decodeBox.getChildren().add(readDecodeStringFromFileButton);
 
-                    inputTextField.setText(content.toString().trim());
+        readDecodeStringFromFileButton.getStyleClass().add("button-styling");
 
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        readDecodeStringFromFileButton.setOnAction(event -> {
+            String content = readContentFromFile();
+            if (content != null) {
+                decodeTextField.setText(content);
+            }
+        });
+
+        VBox decodeLayout = new VBox(10);
+        decodeLayout.getChildren().addAll(decodeInputButton);
+        decodeLayout.setPadding(elementInsets);
+
+        decodeInputButton.getStyleClass().add("button-styling");
+
+        // Xử lý sự kiện khi nhấn nút "Decode"
+        decodeInputButton.setOnAction(event -> {
+            String decodeInput = decodeTextField.getText();
+            try {
+                String decodedResult = huffmanCoding.decode(decodeInput, huffmanCoding.getRoot());
+                decodedResult = insertNewline(decodedResult, 200);
+
+                if (!isDecodeResultVisible[0]) {
+                    decodedLabel.setText("Decoded Result:\n" + decodedResult);
+                    isDecodeResultVisible[0] = true;
+                    // Ghi kết quả decode vào file
+                    writeToFile(decodedResult, "output_decode.txt");
+                } else {
+                    decodedLabel.setText("Decoded Result: ");
+                    isDecodeResultVisible[0] = false;
                 }
+            } catch (Exception e) {
+                Platform.runLater(() -> decodedLabel.setText("An error occurred: " + e.getMessage()));
             }
         });
-
-        decodeButton.setOnAction(event -> {
-            String encodedStr = resultLabel.getText().substring("Encoded Result: ".length());
-            String decodedResult = huffmanCoding.decode(encodedStr, huffmanCoding.getRoot());
-            decodedResult = insertNewline(decodedResult, 200);
-
-            if (!isDecodeResultVisible[0]) {
-                decodedLabel.setText("Decoded Result:\n" + decodedResult);
-                isDecodeResultVisible[0] = true;
-                // Ghi kết quả decode vào file
-                writeToFile(decodedResult, "C:\\Learning\\java1\\dsa\\src\\project\\original\\output_decode.txt");
-            } else {
-                decodedLabel.setText("Decoded Result: ");
-                isDecodeResultVisible[0] = false;
-            }
-        });
+        VBox layout = new VBox(13);
+        layout.getChildren().addAll(titleLabel, inputBox, buttonLayout, resultLabel, decodeBox, decodeLayout, decodedLabel, canvas);
+        layout.setId("layout-container");
+        // Wrap the layout in a ScrollPane
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(layout);
 
         Scene scene = new Scene(scrollPane, 1525, 800);
         // Thêm CSS cho Scene
@@ -174,6 +199,7 @@ public class HuffmanCodingGUI extends Application {
         primaryStage.show();
     }
 
+    // Hàm vẽ cây Huffman trên canvas
     private void drawHuffmanTree(Node node, GraphicsContext gc, double x, double y, double hSpacing, double vSpacing) {
         if (node != null) {
             double circleRadius = 20;
@@ -218,6 +244,7 @@ public class HuffmanCodingGUI extends Application {
         }
     }
 
+    // Hàm chèn dòng mới vào chuỗi theo độ dài kí tự
     private String insertNewline(String input, int interval) {
         StringBuilder result = new StringBuilder();
         int count = 0;
@@ -232,7 +259,7 @@ public class HuffmanCodingGUI extends Application {
         return result.toString();
     }
 
-
+    // Hàm vẽ mũi tên chỉ nối trong cây
     private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2) {
         double arrowSize = 10;
 
@@ -246,6 +273,8 @@ public class HuffmanCodingGUI extends Application {
         gc.strokeLine(x2, y2, x2 - arrowSize * Math.cos(angle - Math.toRadians(30)), y2 - arrowSize * Math.sin(angle - Math.toRadians(30)));
         gc.strokeLine(x2, y2, x2 - arrowSize * Math.cos(angle + Math.toRadians(30)), y2 - arrowSize * Math.sin(angle + Math.toRadians(30)));
     }
+
+    // Hàm ghi nội dung vào file
     private void writeToFile(String content, String filePath) {
         try {
             FileWriter fileWriter = new FileWriter(filePath);
@@ -255,6 +284,31 @@ public class HuffmanCodingGUI extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Hàm đọc nội dung từ file
+    private String readContentFromFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+
+        if (selectedFile != null) {
+            try {
+                StringBuilder content = new StringBuilder();
+                BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\n");
+                }
+
+                reader.close();
+                return content.toString().trim();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }
 
