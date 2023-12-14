@@ -185,10 +185,11 @@ public class HuffmanCodingGUI extends Application {
                 Platform.runLater(() -> decodedLabel.setText("An error occurred: " + e.getMessage()));
             }
         });
+
         VBox layout = new VBox(13);
         layout.getChildren().addAll(titleLabel, inputBox, buttonLayout, resultLabel, decodeBox, decodeLayout, decodedLabel, canvas);
         layout.setId("layout-container");
-        // Wrap the layout in a ScrollPane
+        // Gói bố cục vào ScrollPane
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(layout);
 
@@ -231,7 +232,7 @@ public class HuffmanCodingGUI extends Application {
 
                 // Vẽ giá trị của node với dấu "_"
                 gc.setFill(javafx.scene.paint.Color.BLACK);
-                gc.fillText((node.getCharacter() == ' ' ? "_" : String.valueOf(node.getCharacter())) + ":" + node.getData(), x - 5, y + circleRadius);
+                gc.fillText((node.getCharacter() == ' ' ? " " : String.valueOf(node.getCharacter())) + ":" + node.getData(), x - 5, y + circleRadius);
             } else {
                 // Nếu không chứa kí tự, vẽ giá trị của node thông thường
                 gc.setStroke(javafx.scene.paint.Color.BLACK);

@@ -10,11 +10,11 @@ public class HuffmanCoding {
     private Node root = null; // Gốc của cây Huffman
     private Map<Character, Integer> freqMap; // Map tần suất của các kí tự đầu vào
     private Map<Character, String> codeMap; // Map mã Huffman của các kí tự
-    private String str; // Chuỗi đầu vào cần mã hóa
+    private String string; // Chuỗi đầu vào cần mã hóa
 
     // Xử lý chuỗi đầu vào để xây dựng cây Huffman và các mã
     public HuffmanCoding process(String str) {
-        this.str = str;
+        this.string = str;
         countFreq(str);
         this.root = buildTree(freqMap);
         this.codeMap = new HashMap<>();
@@ -27,11 +27,11 @@ public class HuffmanCoding {
         if (this.codeMap == null || this.codeMap.isEmpty()) {
             return null;
         }
-        StringBuilder builder = new StringBuilder();
-        for (char c : str.toCharArray()) {
-            builder.append(codeMap.get(c));
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char ch : string.toCharArray()) {
+            stringBuilder.append(codeMap.get(ch));
         }
-        return builder.toString();
+        return stringBuilder.toString();
     }
 
     // Giải mã chuỗi đã được mã hóa sử dụng cây Huffman đã cho
@@ -50,7 +50,6 @@ public class HuffmanCoding {
             } else if (bit == '1') {
                 current = current.getRight();
             }
-
             if (current.isLeaf()) {
                 decoded.append(current.getCharacter());
                 current = treeRoot;
@@ -84,7 +83,7 @@ public class HuffmanCoding {
         if (nodePriorityQueue.size() == 1) {
             Map.Entry<Character, Integer> entry = freqMap.entrySet().iterator().next();
             root = new Node(entry.getValue(), entry.getKey());
-            root.setLeft(new Node(0, entry.getKey()));  // Tạo một nút lá mới
+            root.setLeft(new Node(entry.getValue(), entry.getKey()));  // Tạo một nút lá mới
             return root;
         }
         // Xây dựng cây Huffman bằng cách kết hợp các nút có tần suất thấp nhất
@@ -118,9 +117,9 @@ public class HuffmanCoding {
     // Đếm tần suất của mỗi ký tự trong chuỗi đầu vào
     private void countFreq(String str) {
         this.freqMap = new HashMap<>();
-        for (char c : str.toCharArray()) {
-            int rs = this.freqMap.getOrDefault(c, 0);
-            this.freqMap.put(c, rs + 1);
+        for (char ch : str.toCharArray()) {
+            int frequency  = this.freqMap.getOrDefault(ch, 0);
+            this.freqMap.put(ch, frequency  + 1);
         }
     }
 }
