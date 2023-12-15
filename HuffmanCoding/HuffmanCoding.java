@@ -18,7 +18,7 @@ public class HuffmanCoding {
         countFreq(str);
         this.root = buildTree(freqMap);
         this.codeMap = new HashMap<>();
-        buildCode(root, "");
+        generateHuffmanCodes(root, "");
         return this;
     }
 
@@ -72,11 +72,10 @@ public class HuffmanCoding {
     // Phương thức riêng để xây dựng cây Huffman sử dụng hàng đợi ưu tiên
     private Node buildTree(Map<Character, Integer> freqMap) {
         // Hàng đợi ưu tiên để lưu trữ nút dựa trên tần suất của chúng
-        PriorityQueue<Node> nodePriorityQueue = new PriorityQueue<>(freqMap.size(), Comparator.comparingInt(Node::getData));
+        PriorityQueue<Node> nodePriorityQueue = new PriorityQueue<>(Comparator.comparingInt(Node::getData));
         // Tạo các nút lá cho mỗi ký tự và thêm chúng vào hàng đợi ưu tiên
         for (Map.Entry<Character, Integer> entry : freqMap.entrySet())
             nodePriorityQueue.add(new Node(entry.getValue(), entry.getKey()));
-
         Node root = null;
 
         // Khi chỉ có một kí tự, tạo một nút lá với kí tự đó
@@ -98,7 +97,7 @@ public class HuffmanCoding {
     }
 
     // Đệ quy xây dựng các mã Huffman cho mỗi ký tự trong cây
-    private void buildCode(Node node, String code) {
+    private void generateHuffmanCodes(Node node, String code) {
         if (node == null) {
             return;
         }
@@ -107,10 +106,10 @@ public class HuffmanCoding {
             return;
         }
         if (node.getLeft() != null) {
-            buildCode(node.getLeft(), code + "0");
+            generateHuffmanCodes(node.getLeft(), code + "0");
         }
         if (node.getRight() != null) {
-            buildCode(node.getRight(), code + "1");
+            generateHuffmanCodes(node.getRight(), code + "1");
         }
     }
 
@@ -118,8 +117,8 @@ public class HuffmanCoding {
     private void countFreq(String str) {
         this.freqMap = new HashMap<>();
         for (char ch : str.toCharArray()) {
-            int frequency  = this.freqMap.getOrDefault(ch, 0);
-            this.freqMap.put(ch, frequency  + 1);
+            this.freqMap.put(ch, this.freqMap.getOrDefault(ch, 0) + 1);
         }
     }
+
 }
